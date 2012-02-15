@@ -238,10 +238,13 @@ class ldapAuth
 		
 		
 		// cycle through the group memebers to see if we can find the user.
-		if (isset($info[0][$memField]))
 		foreach ($info[0][$memField] as $member)
 		{
-			if ($member == $this->$userField) {  $found = true; }
+			if ($member == $this->$userField) 
+			{ 
+			  echo "user: ".$this->$userField." - member: ".$member;
+			  $found = true; 
+			}
 				
 		}
 		
