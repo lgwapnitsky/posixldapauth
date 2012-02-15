@@ -86,13 +86,17 @@ class ldapAuth
 		if ($ldapType == 1)
 		{
 			// Active Directory, format is user@domain
-			$this->ldaprdn = $username;// ."@".$userContainer;	
+			$this->ldaprdn = $username;// ."@".$userContainer; 
 			
 		} else {
 			// OD - requires full DN.
 			$this->ldaprdn = "uid=" . $this->userName  .",".$userContainer  .",". $this->ldapconfig['basedn'];
 		}
 		
+		@ldap_set_option($this->ldapconn, LDAP_OPT_REFERRALS, 0);
+   		@ldap_set_option($this->ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+
 		if (@ldap_bind($this->ldapconn, $this->ldaprdn, $this->ldappass)) {
 			// now check if this is AD, and if so, set the DN correctly!
 			if ($ldapType == 1)
@@ -102,9 +106,9 @@ class ldapAuth
 				// set the search filter * attributes we want
 				$filter="(samaccountname=".$usercn.")";
 				$attributes=array("dn","cn");
-				
+
 				// search
-				if (!($search = ldap_search($this->ldapconn, $this->ldapconfig['basedn'], $filter,$attributes))) {
+				 if (!($search = ldap_search($this->ldapconn, $this->ldapconfig['basedn'], $filter,$attributes))) {
 				     die("Unable to search ldap server");
 				}	
 				// get the info
@@ -236,7 +240,7 @@ class ldapAuth
 		// cycle through the group memebers to see if we can find the user.
 		foreach ($info[0][$memField] as $member)
 		{
-			if ($member == $this->$userField) { $found = true; }
+			if ($member == $this->$userField) {  $found = true; }
 				
 		}
 		
